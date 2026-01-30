@@ -6,7 +6,9 @@ import { motion } from 'framer-motion';
 import { Plus, Clock, CheckCircle, AlertTriangle, MapPin, ChevronRight, Upload } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import ThreeBackground from '@/components/ThreeBackground'; // Reuse background or make a static one for performance
+import InfoTicker from '@/components/InfoTicker';
+import Chatbot from '@/components/Chatbot';
+import FeedbackCard from '@/components/FeedbackCard';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { MockDB } from '@/lib/mockData';
 
@@ -28,14 +30,14 @@ export default function CitizenDashboard() {
     }, []);
 
     return (
-        <div className="min-h-screen bg-gray-50 flex flex-col relative">
-            <ThreeBackground />
-            <div className="relative z-10 flex flex-col min-h-screen">
+        <div className="min-h-screen bg-[#FDFBF7] flex flex-col relative text-gray-900">
+            <div className="flex flex-col min-h-screen">
                 <Navbar />
+                <InfoTicker />
 
-                <main className="flex-1 container mx-auto px-4 py-8">
+                <main className="flex-1 container mx-auto px-4 py-20 mt-8">
                     {/* Welcome Section */}
-                    <div className="mb-8">
+                    <div className="mb-8 text-center md:text-left">
                         <h1 className="text-2xl font-bold text-gray-800">Welcome, Vedant</h1>
                         <p className="text-gray-500">Citizen of India • Nagpur, Maharashtra</p>
                     </div>
@@ -45,14 +47,14 @@ export default function CitizenDashboard() {
                         {/* New Report Card */}
                         <motion.div
                             whileHover={{ scale: 1.02 }}
-                            className="col-span-1 md:col-span-2 bg-gradient-to-r from-blue-900 to-blue-700 rounded-xl p-6 text-white shadow-lg relative overflow-hidden"
+                            className="col-span-1 md:col-span-2 bg-gradient-to-r from-blue-900 to-blue-700 rounded-xl p-6 text-white shadow-lg relative overflow-hidden flex flex-col justify-between min-h-[300px]"
                         >
-                            <div className="relative z-10">
-                                <h2 className="text-2xl font-bold mb-2">Report Infrastructure Issues</h2>
-                                <p className="mb-6 opacity-90 max-w-md">Help us build a better nation. Spot a broken road, streetlight, or drainage issue? Report it now using our AI-powered tool.</p>
+                            <div className="relative z-10 flex flex-col items-center text-center h-full justify-center">
+                                <h2 className="text-3xl font-bold mb-4">Report Infrastructure Issues</h2>
+                                <p className="mb-8 opacity-90 max-w-lg mx-auto text-lg">Help us build a better nation. Spot a broken road, streetlight, or drainage issue? Report it now using our AI-powered tool.</p>
                                 <Link href="/citizen-dashboard/new-report">
-                                    <span className="inline-flex items-center gap-2 bg-white text-blue-900 px-5 py-3 rounded-lg font-bold shadow-sm hover:bg-gray-100 transition-colors">
-                                        <Plus size={20} />
+                                    <span className="inline-flex items-center gap-2 bg-white text-blue-900 px-8 py-4 rounded-full font-bold shadow-lg hover:bg-gray-100 transition-all transform hover:-translate-y-1">
+                                        <Plus size={24} />
                                         New Report
                                     </span>
                                 </Link>
@@ -61,31 +63,37 @@ export default function CitizenDashboard() {
                             <div className="absolute right-0 top-0 h-full w-1/3 bg-white/10 skew-x-12 transform translate-x-8"></div>
                         </motion.div>
 
-                        {/* Profile/Stats Summary */}
-                        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-                            <div className="flex items-center gap-4 mb-6">
-                                <div className="w-16 h-16 rounded-full bg-gray-200 overflow-hidden">
-                                    {/* Placeholder Avatar */}
-                                    <div className="w-full h-full bg-gray-300 flex items-center justify-center text-gray-500">
-                                        <span className="text-2xl font-bold">V</span>
-                                    </div>
-                                </div>
-                                <div>
-                                    <div className="font-bold text-lg">Vedant Malode</div>
-                                    <div className="text-sm text-gray-500">Rank: Active Citizen</div>
-                                </div>
-                            </div>
-                            <div className="grid grid-cols-3 gap-2 text-center">
-                                {stats.map((stat, i) => (
-                                    <div key={i} className="flex flex-col items-center">
-                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center mb-1 ${stat.bg} ${stat.color}`}>
-                                            <stat.icon size={16} />
+                        {/* Right Column: Profile & Feedback */}
+                        <div className="flex flex-col gap-6">
+                            {/* Profile/Stats Summary */}
+                            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                                <div className="flex items-center gap-4 mb-6">
+                                    <div className="w-16 h-16 rounded-full bg-gray-200 overflow-hidden">
+                                        {/* Placeholder Avatar */}
+                                        <div className="w-full h-full bg-gray-300 flex items-center justify-center text-gray-500">
+                                            <span className="text-2xl font-bold">V</span>
                                         </div>
-                                        <span className="text-lg font-bold text-gray-800">{stat.value}</span>
-                                        <span className="text-[10px] text-gray-500 uppercase">{stat.label}</span>
                                     </div>
-                                ))}
+                                    <div>
+                                        <div className="font-bold text-lg">Vedant Malode</div>
+                                        <div className="text-sm text-gray-500">Rank: Active Citizen</div>
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-3 gap-2 text-center">
+                                    {stats.map((stat, i) => (
+                                        <div key={i} className="flex flex-col items-center">
+                                            <div className={`w-8 h-8 rounded-full flex items-center justify-center mb-1 ${stat.bg} ${stat.color}`}>
+                                                <stat.icon size={16} />
+                                            </div>
+                                            <span className="text-lg font-bold text-gray-800">{stat.value}</span>
+                                            <span className="text-[10px] text-gray-500 uppercase">{stat.label}</span>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
+
+                            {/* Feedback Card */}
+                            <FeedbackCard />
                         </div>
                     </div>
 
@@ -136,6 +144,7 @@ export default function CitizenDashboard() {
                 </main>
 
                 <Footer />
+                <Chatbot />
             </div>
         </div>
     );

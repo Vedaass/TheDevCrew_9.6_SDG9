@@ -4,7 +4,7 @@ import React, { useState, useRef } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Upload, X, MapPin, AlertCircle, CheckCircle2, Loader2, Camera } from 'lucide-react';
+import { Upload, X, MapPin, AlertCircle, CheckCircle2, Loader2, Camera, ChevronRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { MockDB } from '@/lib/mockData';
 
@@ -77,6 +77,17 @@ export default function NewReportPage() {
             <Navbar />
 
             <main className="flex-1 container mx-auto px-4 py-8">
+                {/* Back Button */}
+                <div className="max-w-2xl mx-auto mb-6">
+                    <button
+                        onClick={() => router.push('/citizen-dashboard')}
+                        className="flex items-center gap-2 text-gray-600 hover:text-blue-700 transition-colors font-medium"
+                    >
+                        <ChevronRight className="rotate-180" size={20} />
+                        Back to Dashboard
+                    </button>
+                </div>
+
                 <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
                     <div className="bg-gray-100 p-4 border-b flex justify-between items-center">
                         <h1 className="font-bold text-lg text-gray-800">New Report</h1>

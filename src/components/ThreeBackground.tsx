@@ -19,42 +19,64 @@ const PALETTES = [
 
 const WINDOW_COLORS = ['#fef3c7', '#bfdbfe', '#a7f3d0']; // Warm, Cool, Greenish lights
 
-function Building({ position, height, color }: { position: [number, number, number], height: number, color: string }) {
-    // Generate windows
-    const windows = useMemo(() => {
-        const wins = [];
-        if (height > 1.5) {
-            const levels = Math.floor(height * 2.5);
-            for (let i = 0; i < levels; i++) {
-                // Random patterns
-                if (Math.random() > 0.4) {
-                    const winColor = WINDOW_COLORS[Math.floor(Math.random() * WINDOW_COLORS.length)];
-                    wins.push(
-                        <mesh position={[0, (i * 0.4) - (height / 2) + 0.4, 0.51]} key={i}>
-                            <planeGeometry args={[0.7, 0.25]} />
-                            <meshBasicMaterial color={winColor} transparent opacity={0.8} />
-                        </mesh>
-                    );
+// ... imports
+
+// Deterministic pseudo-random string generator or just use Math.random inside a non-render function
+const generateCityLayout = () => {
+    const buildings = [];
+    for (let i = -10; i <= 10; i++) {
+        for (let j = -10; j <= 10; j++) {
+            if (Math.random() > 0.35) {
+                let h = Math.random() * 4 + 1;
+                if (Math.random() > 0.95) h += 8;
+                if (Math.random() > 0.9) h += 4;
+                const color = PALETTES[Math.floor(Math.random() * PALETTES.length)];
+                const x = i * 1.8 + (Math.random() - 0.5) * 0.5;
+                const z = j * 1.8 + (Math.random() - 0.5) * 0.5;
+
+                // Pre-generate windows
+                const windows = [];
+                if (h > 1.5) {
+                    const levels = Math.floor(h * 2.5);
+                    for (let k = 0; k < levels; k++) {
+                        if (Math.random() > 0.4) {
+                            windows.push({
+                                level: k,
+                                color: WINDOW_COLORS[Math.floor(Math.random() * WINDOW_COLORS.length)]
+                            });
+                        }
+                    }
                 }
+
+                buildings.push({ x, z, h, color, windows, key: `${i}-${j}` });
             }
         }
-        return wins;
-    }, [height]);
+    }
+    return buildings;
+};
+
+function Building({ data }: { data: any }) {
+    const { x, z, h, color, windows } = data;
 
     return (
-        <group position={[position[0], height / 2, position[2]]}>
+        <group position={[x, h / 2, z]}>
             <mesh castShadow receiveShadow>
-                <boxGeometry args={[1, height, 1]} />
+                <boxGeometry args={[1, h, 1]} />
                 <meshStandardMaterial
                     color={color}
                     roughness={0.4}
                     metalness={0.6}
                 />
             </mesh>
-            {/* Windows Group */}
-            {windows}
-            {/* Roof Detail */}
-            <mesh position={[0, height / 2 + 0.05, 0]}>
+            {/* Windows */}
+            {windows.map((win: any, idx: number) => (
+                <mesh position={[0, (win.level * 0.4) - (h / 2) + 0.4, 0.51]} key={idx}>
+                    <planeGeometry args={[0.7, 0.25]} />
+                    <meshBasicMaterial color={win.color} transparent opacity={0.8} />
+                </mesh>
+            ))}
+            {/* Roof */}
+            <mesh position={[0, h / 2 + 0.05, 0]}>
                 <boxGeometry args={[0.9, 0.1, 0.9]} />
                 <meshStandardMaterial color="#4a5568" />
             </mesh>
@@ -64,52 +86,22 @@ function Building({ position, height, color }: { position: [number, number, numb
 
 function CityScene() {
     const groupRef = useRef<THREE.Group>(null);
+    // Use state to hold the static city data, initialized once
+    const [cityLayout] = React.useState(() => generateCityLayout());
 
-    // Smooth Flyover / Rotation Animation
     useFrame(({ clock }) => {
         if (groupRef.current) {
             const t = clock.getElapsedTime();
-            // Gentle undulation and rotation
             groupRef.current.rotation.y = Math.sin(t * 0.05) * 0.2;
             groupRef.current.position.z = Math.sin(t * 0.1) * 2;
         }
     });
 
-    const city = useMemo(() => {
-        const b = [];
-        // Dense City Generation
-        for (let i = -10; i <= 10; i++) {
-            for (let j = -10; j <= 10; j++) {
-                // High density check
-                if (Math.random() > 0.35) {
-                    // Varied heights - some skyscrapers
-                    let h = Math.random() * 4 + 1;
-                    if (Math.random() > 0.95) h += 8; // Supertall
-                    if (Math.random() > 0.9) h += 4; // Tall
-
-                    const color = PALETTES[Math.floor(Math.random() * PALETTES.length)];
-
-                    // Jitter position
-                    const x = i * 1.8 + (Math.random() - 0.5) * 0.5;
-                    const z = j * 1.8 + (Math.random() - 0.5) * 0.5;
-
-                    b.push(
-                        <Building
-                            key={`${i}-${j}`}
-                            position={[x, 0, z]}
-                            height={h}
-                            color={color}
-                        />
-                    );
-                }
-            }
-        }
-        return b;
-    }, []);
-
     return (
         <group ref={groupRef} rotation={[0, Math.PI / 4, 0]}>
-            {city}
+            {cityLayout.map((b) => (
+                <Building key={b.key} data={b} />
+            ))}
             {/* Ground Plane */}
             <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
                 <circleGeometry args={[50, 64]} />

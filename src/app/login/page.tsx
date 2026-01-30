@@ -7,6 +7,7 @@ import { Lock, User, Mail, Shield } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import ThreeBackground from '@/components/ThreeBackground';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { toast } from 'sonner';
 
 export default function LoginPage() {
     const router = useRouter();
@@ -24,8 +25,14 @@ export default function LoginPage() {
         setTimeout(() => {
             setLoading(false);
             if (role === 'citizen') {
+                toast.success("Namaste! Welcome to InfraGuard.", {
+                    style: { background: '#138808', color: 'white', border: 'none' }
+                });
                 router.push('/citizen-dashboard');
             } else {
+                toast.success("Namaste Admin! Accessing Secure Portal.", {
+                    style: { background: '#FF9933', color: 'white', border: 'none' }
+                });
                 router.push('/admin-dashboard');
             }
         }, 1500);
@@ -107,7 +114,9 @@ export default function LoginPage() {
                             </div>
 
                             {/* Submit */}
-                            <button
+                            <motion.button
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.95 }}
                                 type="submit"
                                 disabled={loading}
                                 className="w-full py-3 px-4 bg-gradient-to-r from-blue-700 to-blue-900 text-white rounded-lg font-semibold shadow-lg hover:shadow-xl hover:from-blue-800 hover:to-blue-950 transition-all flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed"
@@ -117,7 +126,7 @@ export default function LoginPage() {
                                 ) : (
                                     t('login.submit')
                                 )}
-                            </button>
+                            </motion.button>
                         </form>
                     </div>
 

@@ -7,6 +7,8 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { CheckCircle, Clock, AlertTriangle, Search, Filter, Eye, MoreVertical } from 'lucide-react';
 import { MockDB } from '@/lib/mockData';
 
+import InfoTicker from '@/components/InfoTicker';
+
 export default function AdminDashboard() {
     const { t } = useLanguage();
 
@@ -23,10 +25,11 @@ export default function AdminDashboard() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 flex flex-col">
+        <div className="min-h-screen bg-[#FDFBF7] flex flex-col">
             <Navbar />
+            <InfoTicker />
 
-            <main className="flex-1 container mx-auto px-4 py-8">
+            <main className="flex-1 container mx-auto px-4 py-20">
                 <div className="flex justify-between items-center mb-8">
                     <div>
                         <h1 className="text-2xl font-bold text-gray-800">Admin Dashboard</h1>

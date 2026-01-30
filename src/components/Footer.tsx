@@ -1,37 +1,63 @@
+"use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+
+const QUOTES = [
+    "Building a New India, One Brick at a Time.",
+    "Infrastructure is the backbone of a Nation's progress.",
+    "Satyameva Jayate - Truth alone triumphs.",
+    "Together we build, together we grow.",
+    "Smart Cities for a Smarter Future."
+];
 
 export default function Footer() {
+    const [index, setIndex] = useState(0);
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setIndex((prev) => (prev + 1) % QUOTES.length);
+        }, 4000);
+        return () => clearInterval(timer);
+    }, []);
+
     return (
-        <footer className="bg-gray-800 text-white py-8 mt-auto">
-            <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8 text-sm">
-                <div>
-                    <h3 className="font-bold text-lg mb-4">InfraGuard</h3>
-                    <p className="text-gray-400">
-                        A verified Government of India platform for crowdsourcing infrastructure maintenance.
-                    </p>
+        <footer className="bg-gray-900 text-white/80 py-4 mt-auto border-t border-gray-800 relative overflow-hidden">
+            <div className="container mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4 text-xs">
+
+                {/* Left: Copy & Branding */}
+                <div className="flex flex-col md:flex-row items-center gap-4">
+                    <span className="font-bold text-white tracking-wide">InfraGuard</span>
+                    <span className="hidden md:inline text-gray-600">|</span>
+                    <span>© 2026 Government of India</span>
                 </div>
-                <div>
-                    <h3 className="font-bold text-lg mb-4">Quick Links</h3>
-                    <ul className="space-y-2 text-gray-400">
-                        <li><a href="#" className="hover:text-white">Home</a></li>
-                        <li><a href="#" className="hover:text-white">About Us</a></li>
-                        <li><a href="#" className="hover:text-white">Contact</a></li>
-                        <li><a href="#" className="hover:text-white">Terms of Service</a></li>
-                    </ul>
+
+                {/* Center: Animating Quotes */}
+                <div className="h-6 overflow-hidden relative min-w-[200px] text-center">
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            key={index}
+                            initial={{ y: 20, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            exit={{ y: -20, opacity: 0 }}
+                            transition={{ duration: 0.5 }}
+                            className="text-orange-400 font-medium italic"
+                        >
+                            "{QUOTES[index]}"
+                        </motion.div>
+                    </AnimatePresence>
                 </div>
-                <div>
-                    <h3 className="font-bold text-lg mb-4">Contact</h3>
-                    <p className="text-gray-400">
-                        Ministry of Infrastructure<br />
-                        New Delhi, India<br />
-                        Email: help@infraguard.gov.in
-                    </p>
+
+                {/* Right: Quick Links */}
+                <div className="flex gap-4">
+                    <a href="#" className="hover:text-white transition-colors">Privacy</a>
+                    <a href="#" className="hover:text-white transition-colors">Terms</a>
+                    <a href="#" className="hover:text-white transition-colors">Support</a>
                 </div>
             </div>
-            <div className="border-t border-gray-700 mt-8 pt-4 text-center text-xs text-gray-500">
-                © 2026 Government of India. All rights reserved.
-            </div>
+
+            {/* Subtle Decoration */}
+            <div className="absolute bottom-0 w-full h-0.5 bg-gradient-to-r from-orange-500 via-white to-green-500 opacity-30"></div>
         </footer>
     );
 }
