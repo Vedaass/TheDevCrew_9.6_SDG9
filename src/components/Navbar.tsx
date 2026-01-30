@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Globe, LogOut, User } from 'lucide-react';
+import { Globe, LogOut, User, Shield, Building2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 
@@ -37,21 +37,26 @@ export default function Navbar() {
             <div className="relative container mx-auto px-4 h-20 flex items-center justify-between">
 
                 {/* Left: InfraGuard Logo */}
-                <Link href="/" className="flex items-center gap-3 min-w-fit">
-                    <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-xs font-bold border-2 border-orange-500 shadow-sm text-blue-800">
-                        IG
+                {/* Left: InfraGuard Logo */}
+                <Link href="/" className="flex items-center gap-3 min-w-fit group">
+                    <div className="relative w-12 h-12 flex items-center justify-center">
+                        <div className="absolute inset-0 bg-gradient-to-tr from-orange-500 to-green-600 rounded-xl rotate-3 group-hover:rotate-6 transition-transform shadow-lg opacity-90"></div>
+                        <div className="absolute inset-0 bg-white rounded-xl -rotate-3 group-hover:-rotate-6 transition-transform shadow-sm border border-orange-100 flex items-center justify-center z-10">
+                            <Shield className="text-blue-900 fill-blue-50" size={28} strokeWidth={2} />
+                            <div className="absolute inset-0 flex items-center justify-center">
+                                <span className="font-bold text-blue-900 text-[10px] mt-1">IG</span>
+                            </div>
+                        </div>
                     </div>
                     <div className="flex flex-col">
-                        <span className="font-bold text-xl leading-none text-blue-900 tracking-tight">InfraGuard</span>
-                        <span className="text-[10px] font-medium text-orange-600 tracking-wider uppercase">Building a Better India</span>
+                        <h1 className="text-2xl font-black tracking-tight text-blue-900 leading-none">
+                            Infra<span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-orange-500">Guard</span>
+                        </h1>
+                        <span className="text-[10px] font-bold text-green-700 tracking-widest uppercase ml-0.5">Civil Vigilance</span>
                     </div>
                 </Link>
 
-                {/* Center-Right: Government Text (Hidden on small mobile) */}
-                <div className="hidden md:flex flex-col items-end flex-grow mr-8 opacity-80">
-                    <span className="text-sm font-bold text-gray-800 uppercase tracking-widest">Government of India</span>
-                    <span className="text-xs font-semibold text-gray-600 uppercase tracking-wider">Ministry of Infrastructure</span>
-                </div>
+                {/* Center-Right: Government Text (Hidden on small mobile) -> REMOVED */}
 
                 {/* Right: Actions */}
                 <div className="flex items-center gap-4 bg-white/50 px-3 py-1 rounded-full border border-gray-200 backdrop-blur-sm">

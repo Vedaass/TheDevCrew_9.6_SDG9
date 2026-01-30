@@ -20,6 +20,10 @@ export interface Report {
     description: string;
     timeline: TimelineEvent[];
     userId: string;
+    // Assignment Details
+    vendorName?: string;
+    workType?: string;
+    estimatedCost?: string;
 }
 
 const STORAGE_KEY = 'infraguard_reports';

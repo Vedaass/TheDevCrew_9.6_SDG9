@@ -15,6 +15,7 @@ export default function NewReportPage() {
     const [step, setStep] = useState(1); // 1: Upload, 2: Details
     const [image, setImage] = useState<string | null>(null);
     const [analyzing, setAnalyzing] = useState(false);
+    const [detectingLocation, setDetectingLocation] = useState(false);
     const [aiResult, setAiResult] = useState<{ type: string, severity: string } | null>(null);
 
     const [formData, setFormData] = useState({
@@ -49,6 +50,67 @@ export default function NewReportPage() {
                 issueType: 'Road Damage'
             }));
         }, 2500);
+    };
+
+    const handleDetectLocation = () => {
+        if (!navigator.geolocation) {
+            alert("Geolocation is not supported by your browser.");
+            return;
+        }
+
+        setDetectingLocation(true);
+
+        navigator.geolocation.getCurrentPosition(
+            async (position) => {
+                const { latitude, longitude } = position.coords;
+
+                try {
+                    // Reverse geocoding using OpenStreetMap Nominatim API
+                    const response = await fetch(
+                        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+                    );
+
+                    if (!response.ok) {
+                        throw new Error("Failed to fetch address");
+                    }
+
+                    const data = await response.json();
+                    const address = data.display_name; // Full formatted address
+
+                    setFormData(prev => ({
+                        ...prev,
+                        location: address || `${latitude}, ${longitude}` // Fallback to coords if no address
+                    }));
+                } catch (error) {
+                    console.error("Error fetching address:", error);
+                    // Fallback to coordinates on API error
+                    setFormData(prev => ({
+                        ...prev,
+                        location: `${latitude}, ${longitude}`
+                    }));
+                    alert("Could not fetch address, using coordinates instead.");
+                } finally {
+                    setDetectingLocation(false);
+                }
+            },
+            (error) => {
+                console.error("Error getting location:", error);
+                let errorMessage = "An unknown error occurred.";
+                switch (error.code) {
+                    case error.PERMISSION_DENIED:
+                        errorMessage = "User denied the request for Geolocation.";
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        errorMessage = "Location information is unavailable.";
+                        break;
+                    case error.TIMEOUT:
+                        errorMessage = "The request to get user location timed out.";
+                        break;
+                }
+                alert(errorMessage);
+                setDetectingLocation(false);
+            }
+        );
     };
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -221,8 +283,21 @@ export default function NewReportPage() {
                                             required
                                         />
                                     </div>
-                                    <button type="button" className="text-xs text-blue-600 font-medium mt-1 flex items-center gap-1 hover:underline">
-                                        <MapPin size={12} /> Detect Current Location
+                                    <button
+                                        type="button"
+                                        onClick={handleDetectLocation}
+                                        disabled={detectingLocation}
+                                        className="text-xs text-blue-600 font-medium mt-1 flex items-center gap-1 hover:underline disabled:opacity-50 disabled:cursor-wait"
+                                    >
+                                        {detectingLocation ? (
+                                            <>
+                                                <Loader2 size={12} className="animate-spin" /> Detecting...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <MapPin size={12} /> Detect Current Location
+                                            </>
+                                        )}
                                     </button>
                                 </div>
 

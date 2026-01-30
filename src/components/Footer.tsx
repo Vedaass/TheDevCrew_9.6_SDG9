@@ -29,7 +29,7 @@ export default function Footer() {
                 <div className="flex flex-col md:flex-row items-center gap-4">
                     <span className="font-bold text-white tracking-wide">InfraGuard</span>
                     <span className="hidden md:inline text-gray-600">|</span>
-                    <span>© 2026 Government of India</span>
+                    <span>© 2026 InfraGuard Ecosystem</span>
                 </div>
 
                 {/* Center: Animating Quotes */}
