@@ -8,6 +8,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ThreeBackground from '@/components/ThreeBackground'; // Reuse background or make a static one for performance
 import { useLanguage } from '@/contexts/LanguageContext';
+import { MockDB } from '@/lib/mockData';
 
 export default function CitizenDashboard() {
     const { t } = useLanguage();
@@ -19,11 +20,12 @@ export default function CitizenDashboard() {
         { label: 'Resolved', value: 9, icon: CheckCircle, color: 'text-green-600', bg: 'bg-green-100' },
     ];
 
-    const recentReports = [
-        { id: 1, type: 'Road Damage', location: 'MG Road, Pune', status: 'In Progress', date: '2026-01-28', image: 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
-        { id: 2, type: 'Streetlight Failure', location: 'Sector 4, Mumbai', status: 'Resolved', date: '2026-01-20', image: 'https://images.unsplash.com/photo-1605656100005-726ddd121d5a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
-        { id: 3, type: 'Drainage Issue', location: 'Shivaji Nagar, Nagpur', status: 'Submitted', date: '2026-01-29', image: 'https://images.unsplash.com/photo-1504221507732-5246c045949b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
-    ];
+    const [recentReports, setRecentReports] = useState<any[]>([]);
+
+    React.useEffect(() => {
+        // In real app, filter by userId
+        setRecentReports(MockDB.getReports().slice(0, 3));
+    }, []);
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col relative">

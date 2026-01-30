@@ -6,6 +6,7 @@ import Footer from '@/components/Footer';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Upload, X, MapPin, AlertCircle, CheckCircle2, Loader2, Camera } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { MockDB } from '@/lib/mockData';
 
 export default function NewReportPage() {
     const router = useRouter();
@@ -52,13 +53,23 @@ export default function NewReportPage() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // Simulate Submission
         const btn = document.getElementById('submit-btn');
         if (btn) btn.innerText = 'Submitting...';
 
+        // Add to Mock DB
+        MockDB.addReport({
+            type: formData.issueType,
+            description: formData.description,
+            location: formData.location,
+            severity: (aiResult?.severity as any) || 'Medium',
+            image: image || '',
+            userId: 'current_user' // In real app, from auth
+        });
+
+        // Small delay for UX
         setTimeout(() => {
             router.push('/citizen-dashboard');
-        }, 1500);
+        }, 1000);
     };
 
     return (

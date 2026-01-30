@@ -5,19 +5,20 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { CheckCircle, Clock, AlertTriangle, Search, Filter, Eye, MoreVertical } from 'lucide-react';
+import { MockDB } from '@/lib/mockData';
 
 export default function AdminDashboard() {
     const { t } = useLanguage();
 
     // Mock Admin Data
-    const [reports, setReports] = useState([
-        { id: 1001, citizen: 'Rahul Kumar', type: 'Road Damage', severity: 'High', location: 'MG Road', status: 'Submitted', date: '2026-01-30', image: 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&q=80&w=200' },
-        { id: 1002, citizen: 'Priya Singh', type: 'Streetlight Failure', severity: 'Medium', location: 'Sector 4', status: 'In Progress', date: '2026-01-29', image: 'https://plus.unsplash.com/premium_photo-1673639536830-4e3d740268d8?auto=format&fit=crop&q=80&w=200' },
-        { id: 1003, citizen: 'Amit Patil', type: 'Drainage Issue', severity: 'High', location: 'Shivaji Nagar', status: 'Resolved', date: '2026-01-28', image: 'https://images.unsplash.com/photo-1621250227181-42cb2026d36e?auto=format&fit=crop&q=80&w=200' },
-        { id: 1004, citizen: 'Sneha Deshmukh', type: 'Bridge Damage', severity: 'High', location: 'Old Bridge', status: 'Submitted', date: '2026-01-27', image: 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&q=80&w=200' },
-    ]);
+    const [reports, setReports] = useState<any[]>([]);
+
+    React.useEffect(() => {
+        setReports(MockDB.getReports());
+    }, []);
 
     const updateStatus = (id: number, newStatus: string) => {
+        MockDB.updateStatus(id, newStatus as any);
         setReports(prev => prev.map(r => r.id === id ? { ...r, status: newStatus } : r));
     };
 
@@ -118,8 +119,8 @@ export default function AdminDashboard() {
                                         </td>
                                         <td className="p-4">
                                             <span className={`px-2 py-1 rounded text-xs font-bold ${report.severity === 'High' ? 'bg-red-100 text-red-700' :
-                                                    report.severity === 'Medium' ? 'bg-orange-100 text-orange-700' :
-                                                        'bg-green-100 text-green-700'
+                                                report.severity === 'Medium' ? 'bg-orange-100 text-orange-700' :
+                                                    'bg-green-100 text-green-700'
                                                 }`}>
                                                 {report.severity}
                                             </span>
@@ -131,8 +132,8 @@ export default function AdminDashboard() {
                                                 value={report.status}
                                                 onChange={(e) => updateStatus(report.id, e.target.value)}
                                                 className={`px-3 py-1 rounded-full text-xs font-bold border cursor-pointer outline-none ${report.status === 'Resolved' ? 'bg-green-50 text-green-700 border-green-200' :
-                                                        report.status === 'In Progress' ? 'bg-orange-50 text-orange-700 border-orange-200' :
-                                                            'bg-blue-50 text-blue-700 border-blue-200'
+                                                    report.status === 'In Progress' ? 'bg-orange-50 text-orange-700 border-orange-200' :
+                                                        'bg-blue-50 text-blue-700 border-blue-200'
                                                     }`}
                                             >
                                                 <option value="Submitted">Submitted</option>
