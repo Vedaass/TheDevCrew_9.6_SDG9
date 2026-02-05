@@ -13,17 +13,44 @@ export default function LoginPage() {
     const router = useRouter();
     const { t } = useLanguage();
     const [role, setRole] = useState<'citizen' | 'admin'>('citizen');
+    const [isRegistering, setIsRegistering] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [fullName, setFullName] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const handleLogin = (e: React.FormEvent) => {
+    const handleAuth = (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
+
+        // Validation for registration
+        if (isRegistering) {
+            if (password !== confirmPassword) {
+                toast.error("Passwords do not match");
+                setLoading(false);
+                return;
+            }
+            if (!fullName.trim()) {
+                toast.error("Full Name is required");
+                setLoading(false);
+                return;
+            }
+        }
 
         // Simulate API Call
         setTimeout(() => {
             setLoading(false);
+            if (isRegistering) {
+                toast.success("Account created successfully! Please login.", {
+                    style: { background: '#138808', color: 'white', border: 'none' }
+                });
+                setIsRegistering(false);
+                setPassword('');
+                setConfirmPassword('');
+                return;
+            }
+
             if (role === 'citizen') {
                 toast.success("Namaste! Welcome to InfraGuard.", {
                     style: { background: '#138808', color: 'white', border: 'none' }
@@ -54,13 +81,17 @@ export default function LoginPage() {
                         <div className="mx-auto w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mb-3">
                             <Shield className="text-white" size={24} />
                         </div>
-                        <h2 className="text-2xl font-bold">{t('login.title')}</h2>
-                        <p className="text-sm opacity-80">Access the National Infrastructure Portal</p>
+                        <h2 className="text-2xl font-bold">
+                            {isRegistering ? 'Create Account' : t('login.title')}
+                        </h2>
+                        <p className="text-sm opacity-80">
+                            {isRegistering ? 'Join the National Infrastructure Portal' : 'Access the National Infrastructure Portal'}
+                        </p>
                     </div>
 
                     {/* Form */}
                     <div className="p-8">
-                        <form onSubmit={handleLogin} className="space-y-6">
+                        <form onSubmit={handleAuth} className="space-y-6">
                             {/* Role Selector */}
                             <div className="grid grid-cols-2 gap-2 p-1 bg-gray-100 rounded-lg">
                                 <button
@@ -85,6 +116,26 @@ export default function LoginPage() {
 
                             {/* Inputs */}
                             <div className="space-y-4">
+                                {isRegistering && (
+                                    <motion.div
+                                        initial={{ opacity: 0, height: 0 }}
+                                        animate={{ opacity: 1, height: 'auto' }}
+                                        exit={{ opacity: 0, height: 0 }}
+                                    >
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                                        <div className="relative">
+                                            <User className="absolute left-3 top-2.5 text-gray-400" size={18} />
+                                            <input
+                                                type="text"
+                                                value={fullName}
+                                                onChange={(e) => setFullName(e.target.value)}
+                                                className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-gray-900 placeholder-gray-500 bg-white"
+                                                placeholder="Full Name"
+                                                required={isRegistering}
+                                            />
+                                        </div>
+                                    </motion.div>
+                                )}
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">{t('login.email')}</label>
                                     <div className="relative">
@@ -113,6 +164,26 @@ export default function LoginPage() {
                                         />
                                     </div>
                                 </div>
+                                {isRegistering && (
+                                    <motion.div
+                                        initial={{ opacity: 0, height: 0 }}
+                                        animate={{ opacity: 1, height: 'auto' }}
+                                        exit={{ opacity: 0, height: 0 }}
+                                    >
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+                                        <div className="relative">
+                                            <Lock className="absolute left-3 top-2.5 text-gray-400" size={18} />
+                                            <input
+                                                type="password"
+                                                value={confirmPassword}
+                                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                                className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-gray-900 placeholder-gray-500 bg-white"
+                                                placeholder="••••••••"
+                                                required={isRegistering}
+                                            />
+                                        </div>
+                                    </motion.div>
+                                )}
                             </div>
 
                             {/* Submit */}
@@ -126,7 +197,7 @@ export default function LoginPage() {
                                 {loading ? (
                                     <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                                 ) : (
-                                    t('login.submit')
+                                    isRegistering ? 'Register' : t('login.submit')
                                 )}
                             </motion.button>
                         </form>
@@ -134,8 +205,19 @@ export default function LoginPage() {
 
                     <div className="bg-gray-50 px-8 py-4 border-t text-center">
                         <p className="text-xs text-gray-500">
-                            By logging in, you agree to our <a href="#" className="underline">Terms of Service</a> and <a href="#" className="underline">Privacy Policy</a>.
+                            By {isRegistering ? 'registering' : 'logging in'}, you agree to our <a href="#" className="underline">Terms of Service</a> and <a href="#" className="underline">Privacy Policy</a>.
                         </p>
+                        <div className="mt-4 pt-4 border-t border-gray-200">
+                            <button
+                                type="button"
+                                onClick={() => setIsRegistering(!isRegistering)}
+                                className="text-sm text-blue-600 hover:text-blue-800 font-medium hover:underline transition-all"
+                            >
+                                {isRegistering
+                                    ? "Already have an account? Login"
+                                    : "Don't have an account? Sign Up"}
+                            </button>
+                        </div>
                     </div>
                 </motion.div>
             </div>

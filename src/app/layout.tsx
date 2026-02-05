@@ -1,14 +1,24 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { Toaster } from 'sonner';
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import EmergencyBar from "@/components/EmergencyBar";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+// Optimize font loading
+const inter = Inter({
+  subsets: ["latin"],
+  display: 'swap',
+  variable: '--font-inter',
+});
 
 export const metadata: Metadata = {
-  title: "InfraGuard - National Infrastructure Reporting Portal",
-  description: "A government-trustworthy platform for reporting infrastructure issues.",
+  title: "Yavatmal District Smart Portal | Government of Maharashtra",
+  description: "Official Digital Portal for Yavatmal District - Emergency Services, Healthcare, and Citizen Safety.",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({
@@ -17,11 +27,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.variable + ' animate-fade-in'}>
+    <html lang="en" className={inter.variable}>
+      <body className="antialiased flex flex-col min-h-screen bg-background text-foreground">
         <LanguageProvider>
-          {children}
-          <Toaster richColors position="top-right" />
+          <Navbar />
+          <main className="flex-grow">
+            {children}
+          </main>
+          <Footer />
+          <EmergencyBar />
         </LanguageProvider>
       </body>
     </html>

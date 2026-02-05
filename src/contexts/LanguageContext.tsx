@@ -1,40 +1,8 @@
 "use client";
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect } from "react";
 
-type Language = 'en' | 'hi' | 'mr';
-
-interface Translations {
-  [key: string]: {
-    en: string;
-    hi: string;
-    mr: string;
-  };
-}
-
-const translations: Translations = {
-  // General
-  'app.title': { en: 'InfraGuard', hi: 'इन्फ्रागार्ड', mr: 'इन्फ्रागार्ड' },
-  'app.subtitle': { en: 'Building a Better India', hi: 'बेहतर भारत का निर्माण', mr: 'एक बेहतर भारत घडवत आहे' },
-  'login.title': { en: 'Login to Portal', hi: 'पोर्टल पर लॉगिन करें', mr: 'पोर्टलवर लॉगिन करा' },
-  'login.email': { en: 'Email Address', hi: 'ईमेल पता', mr: 'ईमेल पत्ता' },
-  'login.password': { en: 'Password', hi: 'पासवर्ड', mr: 'पासवर्ड' },
-  'login.submit': { en: 'Login', hi: 'लॉगिन', mr: 'लॉगिन' },
-  'role.citizen': { en: 'Citizen', hi: 'नागरिक', mr: 'नागरिक' },
-  'role.admin': { en: 'Administrator', hi: 'प्रशासक', mr: 'प्रशासक' },
-  // Dashboard
-  'dash.welcome': { en: 'Welcome', hi: 'स्वागत हे', mr: 'स्वागत आहे' },
-  'dash.report_issue': { en: 'Report Issue', hi: 'समस्या की रिपोर्ट करें', mr: 'समस्येची तक्रार करा' },
-  'dash.my_reports': { en: 'My Reports', hi: 'मेरी रिपोर्ट', mr: 'माझे अहवाल' },
-  'dash.logout': { en: 'Logout', hi: 'लॉग आउट', mr: 'बाहेर पडा' },
-  'dash.recent_reports': { en: 'Recent Reports', hi: 'हाल की रिपोर्ट', mr: 'अलीकडील अहवाल' },
-  // Admin
-  'admin.total': { en: 'Total Reports', hi: 'कुल रिपोर्ट', mr: 'एकूण अहवाल' },
-  'admin.pending': { en: 'Pending', hi: 'लंबित', mr: 'प्रलंबित' },
-  'admin.resolved': { en: 'Resolved', hi: 'हल किया गया', mr: 'निराकरण झाले' },
-  'admin.status': { en: 'Status', hi: 'स्थिति', mr: 'स्थिती' },
-  'admin.action': { en: 'Action', hi: 'कार्रवाई', mr: 'कृती' },
-};
+type Language = "en" | "mr";
 
 interface LanguageContextType {
   language: Language;
@@ -44,17 +12,57 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguage] = useState<Language>('en');
+export const translations: Record<string, Record<Language, string>> = {
+  // Common
+  "app.title": { en: "Yavatmal District Smart Portal", mr: "यवतमाळ जिल्हा स्मार्ट पोर्टल" },
+  "emergency": { en: "Emergency", mr: "आणीबाणी" },
+  "hospital": { en: "Hospital", mr: "रुग्णालय" },
+  "police": { en: "Police", mr: "पोलीस" },
+  "home": { en: "Home", mr: "मुख्यपृष्ठ" },
+  "services": { en: "Services", mr: "सेवा" },
+  "call_now": { en: "Call Now", mr: "कॉल करा" },
+  "location": { en: "Location", mr: "स्थान" },
+  "report_issue": { en: "Report Issue", mr: "तक्रार नोंदवा" },
+  "admin": { en: "Admin", mr: "प्रशासन" },
+  "view_map": { en: "View Map", mr: "नकाशा पहा" },
+  "get_directions": { en: "Get Directions", mr: "दिशा मिळवा" },
+
+  // Emergency types
+  "ambulance": { en: "Ambulance", mr: "रुग्णवाहिका" },
+  "fire": { en: "Fire Brigade", mr: "अग्निशमन दल" },
+  "women_helpline": { en: "Women Helpline", mr: "महिला हेल्पलाइन" },
+  "child_helpline": { en: "Child Helpline", mr: "बाल हेल्पलाइन" },
+  "disaster_mgmt": { en: "Disaster Mgmt", mr: "आपत्ती व्यवस्थापन" },
+
+  // Footer
+  "govt_maharashtra": { en: "Government of Maharashtra", mr: "महाराष्ट्र शासन" },
+  "district_admin": { en: "District Administration Yavatmal", mr: "जिल्हा प्रशासन यवतमाळ" },
+  "privacy": { en: "Privacy Policy", mr: "गोपनीयता धोरण" },
+  "terms": { en: "Terms of Use", mr: "वापर अटी" }
+};
+
+export function LanguageProvider({ children }: { children: React.ReactNode }) {
+  const [language, setLanguage] = useState<Language>("en");
+
+  // Persist language preference
+  useEffect(() => {
+    const saved = localStorage.getItem("language") as Language;
+    if (saved) setLanguage(saved);
+  }, []);
+
+  const handleSetLanguage = (lang: Language) => {
+    setLanguage(lang);
+    localStorage.setItem("language", lang);
+  };
 
   const t = (key: string) => {
     const entry = translations[key];
     if (!entry) return key;
-    return entry[language] || entry['en'];
+    return entry[language];
   };
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+    <LanguageContext.Provider value={{ language, setLanguage: handleSetLanguage, t }}>
       {children}
     </LanguageContext.Provider>
   );
@@ -63,7 +71,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 export function useLanguage() {
   const context = useContext(LanguageContext);
   if (context === undefined) {
-    throw new Error('useLanguage must be used within a LanguageProvider');
+    throw new Error("useLanguage must be used within a LanguageProvider");
   }
   return context;
 }

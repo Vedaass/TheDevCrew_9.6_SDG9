@@ -3,45 +3,51 @@
 @tailwind utilities;
 
 :root {
-  /* Government Palette */
-  --gov-blue: #003366;
-  /* Dark Blue */
-  --gov-blue-light: #004a99;
-  --gov-callout: #f0f8ff;
-  /* Light Blue BG */
+  /* Government Tricolor Palette - Vibrant & Attractive */
+  --gov-orange: #FF671F;
+  /* Deep Saffron */
+  --gov-white: #FFFFFF;
+  /* Pure White */
+  --gov-green: #046A38;
+  /* India Green */
+  --gov-blue: #06038D;
+  /* Navy Blue (Chakra) */
 
-  --tricolor-saffron: #FF9933;
-  --tricolor-white: #FFFFFF;
-  --tricolor-green: #138808;
-  --tricolor-chakra: #000080;
-  /* Navy Blue */
+  /* Semantic Mapping */
+  --primary: var(--gov-orange);
+  --primary-foreground: #FFFFFF;
 
-  --text-primary: #1a1a1a;
-  --text-secondary: #4a4a4a;
-  --text-light: #f5f5f5;
+  --secondary: var(--gov-green);
+  --secondary-foreground: #FFFFFF;
 
-  --background: #f8f9fa;
-  --surface: #ffffff;
+  --accent: #E11D48;
+  /* Emergency Red holds distinct importance */
+  --accent-foreground: #FFFFFF;
 
-  --border: #e2e8f0;
+  /* Backgrounds - cleaner, warmer */
+  --background: #FFFDF5;
+  /* Very subtle warm white */
+  --surface: #FFFFFF;
+  --surface-muted: #FFF7ED;
+  /* Light orange tint */
 
-  /* Modern Gradients */
-  --gradient-primary: linear-gradient(135deg, #003366 0%, #004a99 100%);
-  --gradient-tricolor: linear-gradient(90deg, #FF9933, #FFFFFF, #138808);
+  /* Typography Colors */
+  --text-primary: #1A1A1A;
+  --text-secondary: #475569;
+  --text-muted: #94A3B8;
 
-  --success: #28a745;
-  --warning: #ffc107;
-  --error: #dc3545;
+  --border: #FDBA74;
+  /* Orange border for vitality */
 
-  /* Spacing & Radius */
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-full: 9999px;
+  /* Radius & Shadows */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
 
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-sm: 0 2px 4px 0 rgb(255 103 31 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(255 103 31 / 0.1), 0 2px 4px -2px rgb(255 103 31 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -51,7 +57,9 @@
     --text-primary: #ededed;
     --text-secondary: #a1a1a1;
     --border: #333;
-    --gov-blue: #002244;
+    /* In dark mode, we might want to keep the branding but darken the backgrounds */
+    --gov-orange: #CC5219;
+    --gov-green: #03542D;
   }
 }
 
@@ -65,7 +73,8 @@ body {
 body {
   color: var(--text-primary);
   background: var(--background);
-  background-image: radial-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+  /* Subtle texture for official feel */
+  background-image: radial-gradient(rgba(255, 103, 31, 0.03) 1px, transparent 1px);
   background-size: 24px 24px;
   font-family: var(--font-inter), Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -103,12 +112,12 @@ a {
 }
 
 .btn-primary {
-  background-color: var(--gov-blue);
+  background-color: var(--gov-orange);
   color: white;
 }
 
 .btn-primary:hover {
-  background-color: var(--gov-blue-light);
+  background-color: #E65C1C;
   transform: translateY(-1px);
 }
 
